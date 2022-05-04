@@ -1,0 +1,66 @@
+#!/bin/bash
+
+IP=$1
+nmap $IP > tmp.txt
+TEMP=$PWD/"tmp.txt"
+GREEN="\e[32m"
+CYAN="\e[36m"
+RED="\e[31m"
+ENDCOLOR="\e[0m"
+
+function port-check() {
+    cat tmp.txt | grep $1/ > /dev/null 2>&1
+    if [ "$?" -eq 0 ]
+    then
+        #echo "$1 was found!"
+        return 0
+    else
+        #echo "$1 was NOT found!"
+        return 1
+    fi
+}
+
+function nmap-exec() {
+    if [ "$?" -eq 0 ]
+    then
+        echo -e "${GREEN}\r\n[+] $3 on Port $1 Detected!\r\n${ENDCOLOR}"
+        nmap -p $1 $2 $IP
+    fi
+}
+
+function port() {
+    port-check $1
+    if [ "$?" -eq 0 ]
+    then
+        nmap-exec $1 $2 $3
+    else
+        #echo -e "${RED}\r\n[-] $3 on Port $1 NOT Detected!${ENDCOLOR}"
+        return 1
+    fi
+}
+
+awk '/open/ {print}' tmp.txt > openPorts.txt
+echo -e "\e[1m\r\nOPEN PORTS DISCOVERED:\r\n${ENDCOLOR}"
+while read -r line
+do
+    echo -e "${CYAN}[+] "$line"${ENDCOLOR}" 
+done < openPorts.txt
+echo -e "\e[1m\r\nBeginning Enumeration...${ENDCOLOR}"
+
+port 21 --script=ftp-anon.nse FTP
+port 22 --script=ssh2-enum-algos.nse SSH # Check/adds scripts!
+port 25 --script=smtp-enum-users.nse SMTP # Check/adds scripts!
+port 53 --script=dns-brute.nse DNS
+port 80 --script=http-enum.nse,http-wordpress-enum.nse,http-backup-finder HTTP
+port 110 --script=pop3-ntlm-info.nse,pop3-capabilities.nse POP3 # Check/adds scripts!
+port 143 --script=imap-ntlm-info.nse,imap-capabilities.nse IMAP # Check/adds scripts!
+port 443 --script=http-enum.nse,http-wordpress-enum.nse,http-backup-finder HTTPS # Check/adds scripts!
+port 445 --script=smb-enum-shares.nse,smb-enum-users.nse SMB
+port 465 --script=smtp-enum-users.nse SMTPS # Check/adds scripts!
+port 993 --script=imap-ntlm-info.nse,imap-capabilities.nse IMAPS # Check/adds scripts!
+port 995 --script=pop3-ntlm-info.nse,pop3-capabilities.nse POP3S # Check/adds scripts!
+port 3389 --script=rdp-enum-encryption.nse RDP # Check/adds scripts!
+
+rm tmp.txt
+rm openPorts.txt
+exit 0
