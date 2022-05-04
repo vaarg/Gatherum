@@ -77,5 +77,5 @@ port 993 --script=imap-ntlm-info.nse,imap-capabilities.nse IMAPS # Check/add scr
 port 995 --script=pop3-ntlm-info.nse,pop3-capabilities.nse POP3S # Check/add scripts!
 port 3389 --script=rdp-enum-encryption.nse RDP # Check/add scripts!
 
-cleanup
+clean-up
 exit 0
