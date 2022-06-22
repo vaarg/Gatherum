@@ -69,6 +69,7 @@ port 25 --script=smtp-enum-users.nse SMTP # Check/add scripts!
 port 53 --script=dns-brute.nse DNS
 port 80 --script=http-enum.nse,http-wordpress-enum.nse,http-backup-finder HTTP
 port 110 --script=pop3-ntlm-info.nse,pop3-capabilities.nse POP3 # Check/add scripts!
+port 111 --script=nfs-ls,nfs-statfs,nfs-showmount NFS
 port 143 --script=imap-ntlm-info.nse,imap-capabilities.nse IMAP # Check/add scripts!
 port 443 --script=http-enum.nse,http-wordpress-enum.nse,http-backup-finder HTTPS # Check/add scripts!
 port 445 --script=smb-enum-shares.nse,smb-enum-users.nse SMB
