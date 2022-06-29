@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Gatherum v 1.0.1
+# Author: https://github.com/vaarg/
+# Description: Gatherum is a Nmap-based port scanning and enumeration shell script.
+
 IP=$1
 nmap $IP > tmp.txt
 TEMP=$PWD/"tmp.txt"
